@@ -1,14 +1,29 @@
-
 {
-"session": 1,
-"date": "2026-04-30",
-"files_touched": ["scripts/poc_gpu_check.py", "slurm/poc_check.sbatch"],
-"artifacts_created": [],
-"chpc_job_ids": [],
-"scratch_paths": [],
-"key_decision": "ControlMaster SSH multiplexing instead of passwordless key auth. Authenticate once in terminal (DUO + password), Claude Code reuses the socket for all SSH/rsync commands. Works cleanly with CHPC DUO MFA.",
-"last_completed": "Full project scaffold committed to GitHub (36 files): SLURM job templates (train/convert/eval array/poc), rsync sync scripts, Makefile with convenience targets, and a comprehensive .gitignore. Verified the complete local → GitHub → CHPC → GPU → sync-back workflow with a live SLURM job that passed all 7 environment checks on the A800.",
-"next_step": "Session 1 — src/data/loader.py, formatter.py, contamination_check.py, and pytest suite.",
-"blockers": [],
-"continuity_level_expected": "assistant_derived"
+  "session": 1,
+  "date": "2026-04-30",
+  "files_touched": [
+    "src/data/loader.py",
+    "src/data/contamination_check.py",
+    "src/data/formatter.py",
+    "tests/test_data.py",
+    "metrics/versions.lock",
+    "docs/DECISIONS.md",
+    "docs/architecture.md",
+    "docs/session-plan.md",
+    "CLAUDE.md",
+    "pyproject.toml"
+  ],
+  "artifacts_created": [],
+  "chpc_job_ids": [],
+  "scratch_paths": [
+    "/scratch/general/vast/u1527145/medquant/hf_cache/qiaojin___pub_med_qa",
+    "/scratch/general/vast/u1527145/medquant/hf_cache/medmcqa"
+  ],
+  "key_decision": "PubMedQA standardized dict includes pubid (not in original architecture.md spec) so contamination_check.py can do pubid-matching without re-reading raw HF rows — module isolation preserved.",
+  "last_completed": "Data pipeline implemented (loader, formatter, contamination_check). 12/12 tests green. Datasets verified on CHPC: PubMedQA 211,269 train / 1,000 eval, MedMCQA 120,765 train / 2,816 val (single-choice filtered). Zero contamination confirmed. Smoke test passes. versions.lock written.",
+  "next_step": "Request Llama-3.1-8B HF access (pending gated approval), then re-run model download. Once model is on scratch, Session 2: QLoRA training script + SLURM job.",
+  "blockers": [
+    "Llama-3.1-8B-Instruct: HF gated access not yet approved. Must visit huggingface.co/meta-llama/Llama-3.1-8B-Instruct and accept license before model download can proceed."
+  ],
+  "continuity_level_expected": "assistant_derived"
 }

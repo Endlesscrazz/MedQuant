@@ -1,0 +1,60 @@
+# MedQuant — Reproducibility Record
+# Written: 2026-04-30 (Session 1)
+# IMMUTABLE after this commit. Do not edit.
+# All values verified on CHPC A800 cluster with HF_DATASETS_OFFLINE=1.
+# ──────────────────────────────────────────────────────────────────────────
+
+[datasets]
+pubmedqa_config         = qiaojin/PubMedQA
+pubmedqa_train_config   = pqa_artificial
+pubmedqa_eval_config    = pqa_labeled
+pubmedqa_commit         = 9001f2853fb87cab8d220904e0de81ac6973b318
+pubmedqa_train_n        = 211269
+pubmedqa_eval_n         = 1000
+pubmedqa_contamination  = 0
+
+medmcqa_config          = medmcqa
+medmcqa_commit          = 91c6572c454088bf71b679ad90aa8dffcd0d5868
+medmcqa_train_n_raw     = 182822
+medmcqa_train_n_single  = 120765
+medmcqa_val_n_raw       = 4183
+medmcqa_val_n_single    = 2816
+medmcqa_overlap         = 0
+
+[model]
+base_model_id           = meta-llama/Llama-3.1-8B-Instruct
+model_revision          = PENDING (fill after download — check hf_cache/models--meta-llama--Llama-3.1-8B-Instruct/refs/main)
+base_model_dir          = /scratch/general/vast/u1527145/medquant/models/llama-3.1-8b
+
+[training]
+framework               = trl
+lora_r                  = 16
+lora_alpha              = 32
+lora_dropout            = 0.05
+lora_target_modules     = q_proj,v_proj,k_proj,o_proj
+quantization_bits       = 4
+bnb_4bit_quant_type     = nf4
+bnb_4bit_compute_dtype  = bfloat16
+max_seq_length          = 2048
+learning_rate           = 2.0e-4
+num_train_epochs        = 2
+lr_scheduler            = cosine
+warmup_ratio            = 0.03
+seed                    = 42
+prompt_template_version = v1
+
+[conversion]
+llama_cpp_commit        = PENDING (fill in Session 3 after llama.cpp clone + build)
+llama_cpp_dir           = /uufs/chpc.utah.edu/common/home/u1527145/llama.cpp
+
+[eval]
+eval_backend            = llama_cpp
+label_form              = PENDING (determined by Session 4.0 logprob spike)
+answer_scoring          = PENDING (single-token argmax or multi-token sum — from Session 4.0)
+
+[hardware]
+cluster                 = CHPC Notchpeak
+gpu                     = A800 80GB
+cpu_cores_per_job       = 8
+mem_gb                  = 64
+partition               = yqu-gpu-np
