@@ -1,0 +1,50 @@
+# MedQuant — GPU profile (CHPC A800 80GB)
+# Active profile for primary training and eval runs.
+# All values read by src/train/train.py and src/eval/eval.py.
+# Do NOT hardcode any of these values in code.
+
+# Framework — signals train.py to use TRL QLoRA path
+framework: trl
+
+# Model
+model_id: meta-llama/Llama-3.1-8B-Instruct
+model_nickname: llama-3.1-8b          # used in file names, result labels, run_id prefix
+
+# LoRA
+lora_r: 16
+lora_alpha: 32                         # effective scaling = alpha/r = 2.0
+lora_dropout: 0.05
+lora_target_modules:
+  - q_proj
+  - v_proj
+  - k_proj
+  - o_proj
+
+# BitsAndBytes / QLoRA — GPU/TRL only, ignored when framework=mlx
+quantization_bits: 4
+bnb_4bit_compute_dtype: bfloat16
+bnb_4bit_quant_type: nf4
+
+# Training
+batch_size: 32
+gradient_accumulation_steps: 1        # effective batch = 32
+max_seq_length: 2048
+learning_rate: 2.0e-4
+num_train_epochs: 2
+lr_scheduler: cosine
+warmup_ratio: 0.03
+max_samples_per_dataset: null          # null = full dataset; set to 150000 if >5h budget
+
+# Early stopping (via EarlyStoppingCallback)
+eval_steps: 500
+save_steps: 500
+early_stopping_patience: 3
+
+# Eval / Reproducibility
+prompt_template_version: v1            # bump if prompt format changes
+
+# Paths — update these on CHPC before running
+scratch_base: /scratch/general/vast/u1527145/medquant
+hf_cache_dir: /scratch/general/vast/u1527145/medquant/hf_cache
+base_model_dir: /scratch/general/vast/u1527145/medquant/models/llama-3.1-8b
+llama_cpp_dir: /uufs/chpc.utah.edu/common/home/u1527145/llama.cpp   # set after Session 3

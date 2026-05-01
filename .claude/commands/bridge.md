@@ -1,0 +1,1 @@
+Call get_resume_packet with goal: "$ARGUMENTS" to load context from my previous session in this project. If $ARGUMENTS is empty, pass null for the goal parameter. Then summarize: which files I was actively working on, what I was trying to accomplish, and suggested next steps.

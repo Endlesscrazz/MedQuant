@@ -1,0 +1,67 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# ── Virtual environments ───────────────────────────────────────────────────────
+medq_env/
+.venv/
+venv/
+env/
+
+# ── Model weights & checkpoints — NEVER commit these ──────────────────────────
+*.gguf
+*.bin
+*.safetensors
+*.pt
+*.pth
+checkpoints/
+outputs/
+adapter_model/
+adapter_config.json
+
+# ── HuggingFace cache ─────────────────────────────────────────────────────────
+.cache/
+hf_cache/
+
+# ── Metrics outputs (keep .gitkeep, not actual results during dev) ─────────────
+metrics/raw/*.json
+metrics/charts/*.png
+metrics/charts/*.pdf
+# Keep the final merged results file once produced
+!metrics/results.json
+
+# ── SLURM job outputs ─────────────────────────────────────────────────────────
+slurm/logs/
+slurm/*.out
+slurm/*.err
+*.slurm_out
+
+# ── Context-Bridge ─────────────────────────────────────────────────────────────
+context-bridge-log.md
+context-bridge-state.db
+context-bridge.db
+
+# ── IDE / OS ──────────────────────────────────────────────────────────────────
+.DS_Store
+.vscode/settings.json
+*.swp
+*.swo
+*~
+
+# ── Secrets / env ─────────────────────────────────────────────────────────────
+.env
+*.token
+hf_token.txt
+
+# ── Misc ──────────────────────────────────────────────────────────────────────
+*.log
+versions.lock
+CLAUDE.md.bak

@@ -1,0 +1,46 @@
+# MedQuant — Mac fallback profile (M1 Air, Apple MLX)
+# Used ONLY if CHPC access is lost. Produces smaller-scale results.
+# Results must be labeled "Mac M1 Air / MLX / Qwen-2.5-1.5B" — not comparable to GPU run.
+# Install mlx-lm separately: pip install mlx-lm
+
+# Framework — signals train.py to use mlx_lm path instead of TRL
+framework: mlx
+
+# Model — Qwen-2.5-1.5B (no gating, ~3GB, runs on M1)
+model_id: Qwen/Qwen2.5-1.5B-Instruct
+model_nickname: qwen-2.5-1.5b
+
+# LoRA (mlx-lm built-in LoRA)
+lora_r: 8
+lora_alpha: 16
+lora_dropout: 0.05
+lora_target_modules:
+  - q_proj
+  - v_proj
+
+# BitsAndBytes — NOT used when framework=mlx (ignored)
+# quantization_bits: N/A — mlx uses its own quantization via mlx_lm.convert
+
+# Training
+batch_size: 4
+gradient_accumulation_steps: 8        # effective batch = 32
+max_seq_length: 1024
+learning_rate: 2.0e-4
+num_train_epochs: 2
+lr_scheduler: cosine
+warmup_ratio: 0.05
+max_samples_per_dataset: 50000        # 50K × 2 datasets = 100K total (time budget)
+
+# Early stopping
+eval_steps: 200
+save_steps: 200
+early_stopping_patience: 3
+
+# Eval / Reproducibility
+prompt_template_version: v1
+
+# Paths — local Mac
+scratch_base: /tmp/medquant
+hf_cache_dir: ~/.cache/huggingface
+base_model_dir: ~/.cache/huggingface/hub/Qwen2.5-1.5B-Instruct
+llama_cpp_dir: ~/llama.cpp            # build locally if needed for GGUF eval

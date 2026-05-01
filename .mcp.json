@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "context-bridge": {
+      "type": "stdio",
+      "command": "/Users/shreyas/Desktop/UoU/Claude-workspace/projects/Context-Bridge/cb_env/bin/python3",
+      "args": [
+        "-m",
+        "context_bridge.server"
+      ],
+      "env": {}
+    }
+  }
+}
