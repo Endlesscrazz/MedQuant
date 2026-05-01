@@ -23,7 +23,7 @@ medmcqa_overlap         = 0
 
 [model]
 base_model_id           = meta-llama/Llama-3.1-8B-Instruct
-model_revision          = PENDING (fill after download — check hf_cache/models--meta-llama--Llama-3.1-8B-Instruct/refs/main)
+model_revision          = 0e9e39f249a16976918f6564b8830bc894c89659
 base_model_dir          = /scratch/general/vast/u1527145/medquant/models/llama-3.1-8b
 
 [training]

@@ -23,7 +23,7 @@ Rule: never begin a session without a written plan. Never declare done
 
 | Session | Goal | Status | Gate |
 |---|---|---|---|
-| 1 | Repo setup, data pipeline, CB instrumentation | ✅ COMPLETE (local); ⚠️ CHPC steps 1.5 pending | Setup |
+| 1 | Repo setup, data pipeline, CB instrumentation | ✅ COMPLETE | Setup |
 | 2 | QLoRA training script + SLURM job submission | 🔲 PENDING | Train |
 | 3 | LoRA merge + GGUF conversion at 5 levels | 🔲 PENDING | Convert |
 | 4 | Eval harness + logprob spike + full results table | 🔲 PENDING | Eval |
@@ -132,29 +132,24 @@ Note: git repo initialization is task 1.0, not a prerequisite.
 - [ ] Fill in ground truth for Session 1 at end of 1.5
 
 ### 1.5 — CHPC setup verification + reproducibility lock
-- [ ] SSH to CHPC, complete docs/CHPC-setup.md Steps 5–8
-- [ ] Download Llama-3.1-8B-Instruct to scratch (or confirm already downloaded)
-- [ ] Download both datasets to HF_HOME cache
-- [ ] Verify PubMedQA:
-      pqa_artificial len ~211K, pqa_labeled len exactly 1,000
-- [ ] Verify MedMCQA:
-      train len (after choice_type filter), validation len exactly 4,183
-      Record actual filtered count — do not assume 182,822 without verifying
-- [ ] Run contamination checks: log results to stderr
-- [ ] Run quick smoke test on login node:
-      python src/data/loader.py --config config/gpu_config.yaml
-      (should print sizes, not crash)
-- [ ] Write metrics/versions.lock with all fields from docs/dataset.md
-      Reproducibility Record schema. Fill in real values, not placeholders.
-      Note: llama_cpp_commit filled in Session 3; model_revision filled now.
-- [ ] Commit versions.lock — never modify after this point
+- [x] SSH to CHPC, complete docs/CHPC-setup.md Steps 5–8
+- [x] Download Llama-3.1-8B-Instruct to scratch
+      15GB, 4 safetensors shards, revision 0e9e39f249a16976918f6564b8830bc894c89659
+- [x] Download both datasets to HF_HOME cache
+- [x] Verify PubMedQA:
+      pqa_artificial/train: 211,269 | pqa_labeled/train: 1,000
+- [x] Verify MedMCQA:
+      train raw: 182,822 → single-choice filtered: 120,765
+      validation raw: 4,183 → single-choice filtered: 2,816
+- [x] Run contamination checks: PubMedQA 0 removed, MedMCQA 0 overlap
+- [x] Run quick smoke test on login node — passed cleanly
+- [x] Write metrics/versions.lock with all real values
+- [x] Commit versions.lock
 
 ### 1.6 — Session wrap-up
 - [x] Update CLAUDE.md CURRENT STATE block
-- [ ] Update verify/MEDQUANT-SESSION-CHECKLIST.md ground truth for Session 1
-      (fill in after CHPC steps 1.5 complete)
-- [ ] Mark this session COMPLETE in this file
-      (blocked on CHPC 1.5: dataset size verification + versions.lock)
+- [x] Update verify/ground_truth/session_1.json ground truth for Session 1
+- [x] Mark this session COMPLETE in this file
 
 ---
 

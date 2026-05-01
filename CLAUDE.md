@@ -47,12 +47,13 @@ Session 1 local artifacts:
   src/data/formatter.py        — format_example() / format_dataset()
   tests/test_data.py           — 12 tests, all green
 
-CHPC tasks still needed before Session 2:
-  - SSH to CHPC, complete CHPC-setup.md steps 5–8
-  - Download Llama-3.1-8B to scratch + verify dataset sizes
-  - Run smoke test: python src/data/loader.py --config config/gpu_config.yaml
-  - Write + commit metrics/versions.lock with real values
-  - Fill in verify/ground_truth/session_1.json (update with this session's files)
+CHPC verified:
+  - Llama-3.1-8B-Instruct: 15GB at /scratch/.../medquant/models/llama-3.1-8b
+    revision: 0e9e39f249a16976918f6564b8830bc894c89659
+  - PubMedQA: 211,269 train / 1,000 eval / 0 contaminated
+  - MedMCQA: 120,765 train (single) / 2,816 val (single) / 0 overlap
+  - Smoke test: PASSED on login node
+  - versions.lock: committed with all real values
 
 Next session: Session 2 — QLoRA training script + SLURM job submission
 
