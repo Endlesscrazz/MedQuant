@@ -34,14 +34,27 @@ They are too large and live exclusively on scratch.
 
 ## CURRENT STATE (update this block after every session)
 
-Sessions complete: 0
-Tests passing: N/A (project not started)
+Sessions complete: 1 (local code complete; CHPC task 1.5 still pending)
+Tests passing: 12/12 (tests/test_data.py — all green)
 Training status: Not started
 Baseline accuracy (base Llama-3.1-8B): Not measured
 Fine-tuned accuracy: Not measured
 Active config profile: GPU (config/gpu_config.yaml)
 
-Next session: Session 1 — Repo setup, data pipeline, CB instrumentation
+Session 1 local artifacts:
+  src/data/loader.py           — load_dataset() for pubmedqa + medmcqa
+  src/data/contamination_check.py — pubid + hash overlap checks
+  src/data/formatter.py        — format_example() / format_dataset()
+  tests/test_data.py           — 12 tests, all green
+
+CHPC tasks still needed before Session 2:
+  - SSH to CHPC, complete CHPC-setup.md steps 5–8
+  - Download Llama-3.1-8B to scratch + verify dataset sizes
+  - Run smoke test: python src/data/loader.py --config config/gpu_config.yaml
+  - Write + commit metrics/versions.lock with real values
+  - Fill in verify/ground_truth/session_1.json (update with this session's files)
+
+Next session: Session 2 — QLoRA training script + SLURM job submission
 
 ---
 

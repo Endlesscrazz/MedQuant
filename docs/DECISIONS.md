@@ -224,3 +224,25 @@ from the logprob scoring pass — latency requires a separate generation run.
 ---
 
 ## Decisions logged during implementation sessions below this line
+
+### PubMedQA standardized dict includes pubid — 2026-04-30
+
+**What was decided:**
+The standardized pubmedqa dict returned by `load_dataset()` includes the `pubid` field
+even though architecture.md only lists `{question, context, answer, task}`.
+
+**Why this approach:**
+`contamination_check.check_pubmedqa_contamination()` requires `pubid` to match
+pqa_artificial training items against the pqa_labeled eval set. Without it in the
+standardized dict, the contamination check would need to go back to the raw HuggingFace
+dataset, breaking the module isolation contract (loader → contamination_check, not raw HF).
+
+**Alternatives considered:**
+Pass raw HF rows to the contamination check (breaks module isolation). Return pubid only
+from a separate loader variant (adds API surface for no benefit).
+
+**Trade-off accepted:**
+The standardized dict has one extra field not documented in architecture.md. Architecture.md
+should be updated to include pubid in the pubmedqa schema.
+
+---

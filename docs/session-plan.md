@@ -23,7 +23,7 @@ Rule: never begin a session without a written plan. Never declare done
 
 | Session | Goal | Status | Gate |
 |---|---|---|---|
-| 1 | Repo setup, data pipeline, CB instrumentation | 🔲 PENDING | Setup |
+| 1 | Repo setup, data pipeline, CB instrumentation | ✅ COMPLETE (local); ⚠️ CHPC steps 1.5 pending | Setup |
 | 2 | QLoRA training script + SLURM job submission | 🔲 PENDING | Train |
 | 3 | LoRA merge + GGUF conversion at 5 levels | 🔲 PENDING | Convert |
 | 4 | Eval harness + logprob spike + full results table | 🔲 PENDING | Eval |
@@ -49,103 +49,86 @@ Note: git repo initialization is task 1.0, not a prerequisite.
 ---
 
 ### 1.0 — Repo initialization
-- [ ] `git init`, create .gitignore, make initial commit
-- [ ] .gitignore must include:
+- [x] `git init`, create .gitignore, make initial commit
+- [x] .gitignore must include:
       outputs/, *.gguf, *.safetensors, *.bin, *.pt, *.pth,
       hf_cache/, __pycache__/, .env, metrics/raw/
-- [ ] pyproject.toml with dev dependencies:
+- [x] pyproject.toml with dev dependencies:
       pytest, transformers, datasets, peft, bitsandbytes, trl, accelerate,
       llama-cpp-python, fastapi, uvicorn, pyyaml, matplotlib, scipy
       (mlx-lm listed as optional/Mac-only comment)
-- [ ] Create all directories:
+- [x] Create all directories:
       src/common/, src/data/, src/train/, src/eval/, src/convert/,
       src/analysis/, src/serve/, slurm/, tests/, verify/ground_truth/,
       metrics/raw/, metrics/charts/
       Add .gitkeep to metrics/raw/ and metrics/charts/ so they track in git
-- [ ] Add __init__.py to all src/ subdirectories
-- [ ] Push to GitHub
+- [x] Add __init__.py to all src/ subdirectories
+- [x] Push to GitHub
 
 ### 1.1 — Config files
-- [ ] Write config/gpu_config.yaml with full schema per architecture.md:
+- [x] Write config/gpu_config.yaml with full schema per architecture.md:
       framework: trl, model_id, model_nickname, LoRA params, BnB params,
       training params, max_samples_per_dataset: null, prompt_template_version: v1,
       scratch paths, llama_cpp_dir (placeholder — fill in Session 3),
       base_model_dir (set after CHPC download)
-- [ ] Write config/mac_config.yaml:
+- [x] Write config/mac_config.yaml:
       framework: mlx, Qwen-2.5-1.5B-Instruct, smaller LoRA/batch params,
       max_samples_per_dataset: 50000, same eval/path fields
-- [ ] Verify both files parse cleanly with PyYAML
+- [x] Verify both files parse cleanly with PyYAML
 
 ### 1.2 — Data pipeline (src/data/)
-- [ ] Write src/data/loader.py
-  - [ ] load_dataset() for pubmedqa:
+- [x] Write src/data/loader.py
+  - [x] load_dataset() for pubmedqa:
         train: load_dataset("qiaojin/PubMedQA", "pqa_artificial", split="train")
         eval:  load_dataset("qiaojin/PubMedQA", "pqa_labeled",    split="train")
         CRITICAL: pqa_labeled has NO "test" split — calling split="test" raises KeyError.
-  - [ ] load_dataset() for medmcqa (train + validation splits)
+  - [x] load_dataset() for medmcqa (train + validation splits)
         Filter to choice_type == "single" before returning (drop multi-select rows)
-  - [ ] max_samples supported: shuffle with seed=42, then truncate
-  - [ ] TRANSFORMERS_OFFLINE, HF_DATASETS_OFFLINE, HF_HUB_OFFLINE supported
-  - [ ] Returns standardized dict schema per architecture.md
-  - [ ] Raises ValueError on empty dataset or schema mismatch; RuntimeError on
+  - [x] max_samples supported: shuffle with seed=42, then truncate
+  - [x] TRANSFORMERS_OFFLINE, HF_DATASETS_OFFLINE, HF_HUB_OFFLINE supported
+  - [x] Returns standardized dict schema per architecture.md
+  - [x] Raises ValueError on empty dataset or schema mismatch; RuntimeError on
         load failure. Only CLI entry points catch and print readable stderr + exit 1.
-  - [ ] Logs dataset size to stderr on load
+  - [x] Logs dataset size to stderr on load
 
-- [ ] Write src/data/contamination_check.py
-  - [ ] check_pubmedqa_contamination(train_items, eval_items) → (cleaned, n_removed)
+- [x] Write src/data/contamination_check.py
+  - [x] check_pubmedqa_contamination(train_items, eval_items) → (cleaned, n_removed)
         Primary key: pubid. Removes pqa_artificial items whose pubid appears in
         pqa_labeled eval set. Expected n_removed=0 but check is mandatory.
-  - [ ] Log to stderr: "PubMedQA contamination check: removed N samples"
-  - [ ] check_medmcqa_overlap(train_items, val_items) → int
+  - [x] Log to stderr: "PubMedQA contamination check: removed N samples"
+  - [x] check_medmcqa_overlap(train_items, val_items) → int
         Normalized question text hash check. Expected 0. Log result.
 
-- [ ] Write src/data/formatter.py
-  - [ ] format_example(item, tokenizer, add_generation_prompt=False) → str
+- [x] Write src/data/formatter.py
+  - [x] format_example(item, tokenizer, add_generation_prompt=False) → str
         Calls tokenizer.apply_chat_template() for both task types
-  - [ ] PubMedQA user message: "Context: {context}\n\nQuestion: {question}\n\n
+  - [x] PubMedQA user message: "Context: {context}\n\nQuestion: {question}\n\n
         Answer with exactly one word: yes, no, or maybe."
         Assistant message (train only): {answer}
-  - [ ] MedMCQA user message: "Question: {question}\nA) ...\nB) ...\nC) ...\nD) ...\n
+  - [x] MedMCQA user message: "Question: {question}\nA) ...\nB) ...\nC) ...\nD) ...\n
         \nAnswer with exactly one letter: A, B, C, or D."
         Assistant message (train only): {answer_letter}
-  - [ ] add_generation_prompt=False for training, True for eval
-  - [ ] format_dataset(items, tokenizer, add_generation_prompt) → list[str]
+  - [x] add_generation_prompt=False for training, True for eval
+  - [x] format_dataset(items, tokenizer, add_generation_prompt) → list[str]
 
 ### 1.3 — Tests for data pipeline
-- [ ] tests/test_data.py
-  - [ ] test_pubmedqa_loader: mock HF, verify standardized schema
-  - [ ] test_medmcqa_loader: mock HF, verify standardized schema, choice_type filter
-  - [ ] test_formatter_pubmedqa: verify output contains context + question
-  - [ ] test_formatter_medmcqa: verify output contains question + options
-  - [ ] test_add_generation_prompt_false: no trailing assistant turn marker in output
-  - [ ] test_max_samples: truncation respects max_samples with seed=42
-  - [ ] test_loader_raises_on_empty: ValueError raised when dataset is empty
-  - [ ] test_pubmedqa_contamination: PMID-matching removal logic
-  - [ ] test_medmcqa_overlap: normalized hash check logic
-- [ ] pytest tests/ — all tests green before proceeding
+- [x] tests/test_data.py
+  - [x] test_pubmedqa_loader: mock HF, verify standardized schema
+  - [x] test_medmcqa_loader: mock HF, verify standardized schema, choice_type filter
+  - [x] test_formatter_pubmedqa: verify output contains context + question
+  - [x] test_formatter_medmcqa: verify output contains question + options
+  - [x] test_add_generation_prompt_false: no trailing assistant turn marker in output
+  - [x] test_max_samples: truncation respects max_samples with seed=42
+  - [x] test_loader_raises_on_empty: ValueError raised when dataset is empty
+  - [x] test_pubmedqa_contamination: PMID-matching removal logic
+  - [x] test_medmcqa_overlap: normalized hash check logic
+- [x] pytest tests/ — all tests green before proceeding (12/12 passed)
 
 ### 1.4 — CB instrumentation
-- [ ] Create verify/MEDQUANT-SESSION-CHECKLIST.md with ground truth schema:
-      ```json
-      {
-        "session": 1,
-        "date": "YYYY-MM-DD",
-        "files_touched": [],
-        "artifacts_created": [],
-        "chpc_job_ids": [],
-        "scratch_paths": [],
-        "key_decision": "",
-        "last_completed": "",
-        "next_step": "",
-        "blockers": [],
-        "continuity_level_expected": "assistant_derived"
-      }
-      ```
-- [ ] Write verify/eval_cb_packet.py — reads JSONL from context-bridge MCP and
-      scores a simulated session summary against ground truth schema above
-- [ ] Verify /bridge command works at session start (loads prior session context)
-- [ ] Add context-bridge SessionEnd hook: runs after each session to capture
-      files_touched, artifacts_created, key decisions
+- [x] Create verify/MEDQUANT-SESSION-CHECKLIST.md with ground truth schema
+- [x] Write verify/eval_cb_packet.py
+- [x] Verify /bridge command works at session start (loads prior session context)
+- [x] Add context-bridge SessionEnd hook
 - [ ] Fill in ground truth for Session 1 at end of 1.5
 
 ### 1.5 — CHPC setup verification + reproducibility lock
@@ -167,9 +150,11 @@ Note: git repo initialization is task 1.0, not a prerequisite.
 - [ ] Commit versions.lock — never modify after this point
 
 ### 1.6 — Session wrap-up
-- [ ] Update CLAUDE.md CURRENT STATE block
+- [x] Update CLAUDE.md CURRENT STATE block
 - [ ] Update verify/MEDQUANT-SESSION-CHECKLIST.md ground truth for Session 1
+      (fill in after CHPC steps 1.5 complete)
 - [ ] Mark this session COMPLETE in this file
+      (blocked on CHPC 1.5: dataset size verification + versions.lock)
 
 ---
 

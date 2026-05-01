@@ -119,7 +119,7 @@ def load_dataset(
 ```
 
 Returns standardized dicts:
-  pubmedqa: {question, context, answer, task="pubmedqa"}
+  pubmedqa: {pubid, question, context, answer, task="pubmedqa"}
   medmcqa:  {question, opa, opb, opc, opd, answer_idx, task="medmcqa"}
 
 Rules:

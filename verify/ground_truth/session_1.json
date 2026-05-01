@@ -1,0 +1,14 @@
+
+{
+"session": 1,
+"date": "2026-04-30",
+"files_touched": ["scripts/poc_gpu_check.py", "slurm/poc_check.sbatch"],
+"artifacts_created": [],
+"chpc_job_ids": [],
+"scratch_paths": [],
+"key_decision": "ControlMaster SSH multiplexing instead of passwordless key auth. Authenticate once in terminal (DUO + password), Claude Code reuses the socket for all SSH/rsync commands. Works cleanly with CHPC DUO MFA.",
+"last_completed": "Full project scaffold committed to GitHub (36 files): SLURM job templates (train/convert/eval array/poc), rsync sync scripts, Makefile with convenience targets, and a comprehensive .gitignore. Verified the complete local → GitHub → CHPC → GPU → sync-back workflow with a live SLURM job that passed all 7 environment checks on the A800.",
+"next_step": "Session 1 — src/data/loader.py, formatter.py, contamination_check.py, and pytest suite.",
+"blockers": [],
+"continuity_level_expected": "assistant_derived"
+}
